@@ -1,0 +1,3 @@
+# Questa directory contiene configurazioni dinamiche Traefik (middleware, router custom).
+# I file .yml committati qui vengono caricati automaticamente da Traefik.
+# Non ignorare nulla: tutto ciò che viene aggiunto deve essere tracciato.

@@ -1,0 +1,49 @@
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: false
+
+log:
+  level: INFO
+  format: json
+
+accessLog:
+  format: json
+
+api:
+  dashboard: true
+  insecure: true
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: false
+  websecure:
+    address: ":443"
+    http:
+      tls:
+        certResolver: letsencrypt
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: traefik_public
+    watch: true
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+# CertificateResolvers (Let's Encrypt)
+# Decommentare per HTTPS automatico su server con IP pubblico
+# certificatesResolvers:
+#   letsencrypt:
+#     acme:
+#       email: admin@yourdomain.com
+#       storage: /etc/traefik/acme.json
+#       httpChallenge:
+#         entryPoint: web

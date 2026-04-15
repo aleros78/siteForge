@@ -1,0 +1,45 @@
+# ── Ambiente ──────────────────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# ── Docker runtime ────────────────────────────────────────────────────────────
+docker/traefik/acme.json
+docker/traefik/certs/
+docker/data/
+
+# ── Laravel (da root repo) ────────────────────────────────────────────────────
+src/vendor/
+src/node_modules/
+src/public/build/
+src/public/hot
+src/public/storage
+src/storage/app/backups/*
+src/storage/*.key
+src/.phpunit.result.cache
+src/.php-cs-fixer.cache
+src/auth.json
+src/coverage/
+src/_ide_helper.php
+src/_ide_helper_models.php
+src/.phpstorm.meta.php
+
+# ── Log e file temporanei ─────────────────────────────────────────────────────
+*.log
+install.log
+
+# ── IDE e editor ──────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.fleet/
+
+# ── Sistema operativo ─────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db

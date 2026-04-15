@@ -1,0 +1,49 @@
+# ── Dipendenze ────────────────────────────────────────────────────────────────
+/vendor/
+/node_modules/
+
+# ── Asset compilati ───────────────────────────────────────────────────────────
+/public/build/
+/public/hot
+/public/storage
+
+# ── Ambiente ──────────────────────────────────────────────────────────────────
+.env
+.env.local
+.env.backup
+.env.production
+.env.*.local
+!.env.example
+
+# ── Cache runtime Laravel ─────────────────────────────────────────────────────
+/storage/*.key
+/bootstrap/cache/*.php
+
+# ── Backup (file generati a runtime) ─────────────────────────────────────────
+/storage/app/backups/*
+
+# ── Test e analisi statica ────────────────────────────────────────────────────
+.phpunit.result.cache
+.phpunit.cache/
+/coverage/
+/.php-cs-fixer.cache
+/.php_cs.cache
+
+# ── Composer ──────────────────────────────────────────────────────────────────
+auth.json
+
+# ── IDE helper (barryvdh/laravel-ide-helper) ─────────────────────────────────
+/_ide_helper.php
+/_ide_helper_models.php
+/.phpstorm.meta.php
+
+# ── Strumenti dev storici ─────────────────────────────────────────────────────
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+
+# ── IDE e editor ──────────────────────────────────────────────────────────────
+/.fleet/
+/.idea/
+/.vscode/

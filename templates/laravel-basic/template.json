@@ -1,0 +1,32 @@
+{
+    "name": "Laravel Basic",
+    "slug": "laravel-basic",
+    "description": "Stack Laravel con PHP-FPM, Nginx, MariaDB, Redis e Queue Worker",
+    "version": "1.0.0",
+    "type": "laravel",
+    "is_active": true,
+    "is_builtin": true,
+    "services": ["app", "nginx", "db", "redis", "queue"],
+    "default_ports": {"http": 80, "db": 3306},
+    "required_env_vars": ["APP_KEY", "DB_DATABASE", "DB_USERNAME", "DB_PASSWORD"],
+    "files": [
+        {
+            "filename": "docker-compose.stub",
+            "target_path": "docker-compose.yml",
+            "type": "docker-compose",
+            "is_required": true
+        },
+        {
+            "filename": "nginx.conf.stub",
+            "target_path": "docker/nginx/default.conf",
+            "type": "nginx",
+            "is_required": true
+        },
+        {
+            "filename": ".env.stub",
+            "target_path": ".env",
+            "type": "env",
+            "is_required": true
+        }
+    ]
+}
