@@ -266,19 +266,26 @@ else
     info "Password DB generate automaticamente e salvate nel .env"
 fi
 
-# Aggiorna anche il .env principale (root del progetto) se necessario
+# Sincronizza sempre il .env principale (root) con i valori di src/.env
+# Il root .env viene letto da docker-compose.yml per passare variabili ai container (es. APP_DOMAIN a Traefik)
 ROOT_ENV="${SCRIPT_DIR}/.env"
 if [[ ! -f "$ROOT_ENV" ]]; then
     cp "${SCRIPT_DIR}/.env.example" "$ROOT_ENV"
-    # Sincronizza i valori dal src/.env
-    DB_PASSWORD_VAL=$(grep '^DB_PASSWORD=' "$ENV_FILE" | cut -d= -f2-)
-    DB_ROOT_VAL=$(grep '^DB_ROOT_PASSWORD=' "$ENV_FILE" | cut -d= -f2-)
-    APP_DOMAIN_VAL=$(grep '^APP_DOMAIN=' "$ENV_FILE" | cut -d= -f2-)
-    sed -i "s|APP_DOMAIN=.*|APP_DOMAIN=${APP_DOMAIN_VAL}|g"           "$ROOT_ENV"
-    sed -i "s|DB_PASSWORD=.*|DB_PASSWORD=${DB_PASSWORD_VAL}|g"         "$ROOT_ENV"
-    sed -i "s|DB_ROOT_PASSWORD=.*|DB_ROOT_PASSWORD=${DB_ROOT_VAL}|g"   "$ROOT_ENV"
-    sed -i "s|PROJECTS_BASE_PATH=.*|PROJECTS_BASE_PATH=${PROJECTS_PATH}|g" "$ROOT_ENV"
+    info "File root .env creato da .env.example"
 fi
+
+# Leggi i valori da src/.env e sincronizza il root .env
+DB_PASSWORD_VAL=$(grep '^DB_PASSWORD='      "$ENV_FILE" | cut -d= -f2-)
+DB_ROOT_VAL=$(grep '^DB_ROOT_PASSWORD='     "$ENV_FILE" | cut -d= -f2-)
+APP_DOMAIN_VAL=$(grep '^APP_DOMAIN='        "$ENV_FILE" | cut -d= -f2-)
+APP_URL_VAL=$(grep '^APP_URL='             "$ENV_FILE" | cut -d= -f2-)
+
+sed -i "s|APP_DOMAIN=.*|APP_DOMAIN=${APP_DOMAIN_VAL}|g"                 "$ROOT_ENV"
+sed -i "s|APP_URL=.*|APP_URL=${APP_URL_VAL}|g"                           "$ROOT_ENV"
+sed -i "s|DB_PASSWORD=.*|DB_PASSWORD=${DB_PASSWORD_VAL}|g"               "$ROOT_ENV"
+sed -i "s|DB_ROOT_PASSWORD=.*|DB_ROOT_PASSWORD=${DB_ROOT_VAL}|g"         "$ROOT_ENV"
+sed -i "s|PROJECTS_BASE_PATH=.*|PROJECTS_BASE_PATH=${PROJECTS_PATH}|g"   "$ROOT_ENV"
+success "Root .env sincronizzato con src/.env (dominio: ${APP_DOMAIN_VAL})"
 
 # ── File ACME per Traefik ─────────────────────────────────────────────────────
 step "Configurazione Traefik"

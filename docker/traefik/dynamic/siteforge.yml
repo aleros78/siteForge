@@ -1,0 +1,13 @@
+http:
+  routers:
+    siteforge:
+      rule: "Host(`{{ env \"APP_DOMAIN\" }}`)"
+      entrypoints:
+        - web
+      service: siteforge-nginx
+
+  services:
+    siteforge-nginx:
+      loadBalancer:
+        servers:
+          - url: "http://nginx:80"
