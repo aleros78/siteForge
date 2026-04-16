@@ -18,11 +18,13 @@
 ### 1. Clona il repository
 
 ```bash
-git clone <url-repository> /opt/siteforge
+sudo mkdir -p /opt/siteforge
+sudo chown $USER:$USER /opt/siteforge
+git clone git@github.com:aleros78/siteForge.git /opt/siteforge
 cd /opt/siteforge
 ```
 
-> Non è necessario il `sudo` per clonare il repository.
+> `/opt/` è una directory di sistema: occorre creare la cartella con `sudo` e assegnarne la proprietà all'utente corrente **prima** di eseguire il clone.
 
 ### 2. Esegui lo script di installazione
 
