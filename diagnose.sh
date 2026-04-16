@@ -78,19 +78,34 @@ else
 fi
 
 # Verifica coerenza tra root .env e src/.env
-if [[ -f "$ROOT_ENV" ]]; then
-    ROOT_DOMAIN=$(grep '^APP_DOMAIN=' "$ROOT_ENV" | cut -d= -f2- || echo "")
-    if [[ "$ROOT_DOMAIN" != "$APP_DOMAIN" ]]; then
-        warn "APP_DOMAIN non coerente: root .env='${ROOT_DOMAIN}' src/.env='${APP_DOMAIN}'"
-        fix "Sincronizzo root .env con src/.env..."
-        sed -i "s|APP_DOMAIN=.*|APP_DOMAIN=${APP_DOMAIN}|g" "$ROOT_ENV"
-        sed -i "s|APP_URL=.*|APP_URL=${APP_URL}|g"           "$ROOT_ENV"
-        success "root .env sincronizzato"
-        mark_fixed
-    else
-        success "root .env coerente con src/.env"
-    fi
+# La fonte di verità è: root .env se ha un valore, altrimenti src/.env
+ROOT_DOMAIN=$(grep '^APP_DOMAIN=' "$ROOT_ENV" 2>/dev/null | cut -d= -f2- || echo "")
+
+if [[ -z "$APP_DOMAIN" && -n "$ROOT_DOMAIN" ]]; then
+    # src/.env non ha APP_DOMAIN ma root .env sì → aggiunge a src/.env
+    warn "APP_DOMAIN mancante in src/.env — aggiungo da root .env ('${ROOT_DOMAIN}')"
+    echo "APP_DOMAIN=${ROOT_DOMAIN}" >> "$SRC_ENV"
+    APP_DOMAIN="$ROOT_DOMAIN"
+    APP_URL="http://${APP_DOMAIN}"
+    success "APP_DOMAIN aggiunto a src/.env"
+    mark_fixed
+elif [[ -n "$APP_DOMAIN" && "$ROOT_DOMAIN" != "$APP_DOMAIN" ]]; then
+    # src/.env ha un valore diverso → aggiorna root .env
+    warn "APP_DOMAIN non coerente: root .env='${ROOT_DOMAIN}' src/.env='${APP_DOMAIN}'"
+    fix "Sincronizzo root .env con src/.env..."
+    sed -i "s|APP_DOMAIN=.*|APP_DOMAIN=${APP_DOMAIN}|g" "$ROOT_ENV"
+    sed -i "s|APP_URL=.*|APP_URL=${APP_URL}|g"           "$ROOT_ENV"
+    success "root .env sincronizzato"
+    mark_fixed
+elif [[ -z "$APP_DOMAIN" && -z "$ROOT_DOMAIN" ]]; then
+    error "APP_DOMAIN non impostato né in src/.env né in root .env"
+    info "Imposta APP_DOMAIN manualmente in src/.env, poi ri-esegui diagnose.sh"
+    mark_error
 else
+    success "root .env coerente con src/.env (${APP_DOMAIN})"
+fi
+
+if [[ ! -f "$ROOT_ENV" ]]; then
     warn "root .env mancante — creazione da src/.env..."
     cp "${SCRIPT_DIR}/.env.example" "$ROOT_ENV"
     sed -i "s|APP_DOMAIN=.*|APP_DOMAIN=${APP_DOMAIN}|g"     "$ROOT_ENV"

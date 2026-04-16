@@ -315,6 +315,23 @@ do
 done
 success "Permessi storage impostati"
 
+# ── Permessi src/.env (deve essere scrivibile da www-data per key:generate) ──
+chown root:www-data "${SCRIPT_DIR}/src/.env"
+chmod 664 "${SCRIPT_DIR}/src/.env"
+success "Permessi src/.env impostati (root:www-data 664)"
+
+# ── Genera APP_KEY se mancante (evita che il container debba scrivere su .env) ─
+step "Generazione APP_KEY"
+
+APP_KEY_CURRENT=$(grep '^APP_KEY=' "${SCRIPT_DIR}/src/.env" | cut -d= -f2-)
+if [[ -z "$APP_KEY_CURRENT" ]]; then
+    APP_KEY_NEW="base64:$(openssl rand -base64 32)"
+    sed -i "s|APP_KEY=.*|APP_KEY=${APP_KEY_NEW}|g" "${SCRIPT_DIR}/src/.env"
+    success "APP_KEY generato e salvato in src/.env"
+else
+    info "APP_KEY già presente, skip"
+fi
+
 # ── Build immagini Docker ─────────────────────────────────────────────────────
 step "Build immagini Docker"
 
