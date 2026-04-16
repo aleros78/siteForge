@@ -17,7 +17,7 @@ services:
 
   # ─── Traefik (reverse proxy globale) ────────────────────────────────────────
   traefik:
-    image: traefik:v3.0
+    image: traefik:v3.3
     container_name: siteforge_traefik
     restart: unless-stopped
     command:
